@@ -419,10 +419,6 @@ h6 {
 header {
   height: 60px;
   padding: 20px 100px; }
-  header .logo {
-    float: left;
-    font-size: 48px;
-    font-family: "Chancery", cursive, LiSu, sans-serif; }
   header .nav {
     float: right;
     margin-top: 0;

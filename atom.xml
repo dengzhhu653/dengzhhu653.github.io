@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Hexo</title>
+  <title></title>
   
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://yoursite.com/"/>
+  <link href="https://dengzhhu653.github.io/"/>
   <updated>2016-09-13T08:34:44.000Z</updated>
-  <id>http://yoursite.com/</id>
+  <id>https://dengzhhu653.github.io/</id>
   
   <author>
-    <name>John Doe</name>
+    <name>Zhihua Deng</name>
     
   </author>
   
@@ -17,8 +17,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="http://yoursite.com/2016/09/13/hello-world/"/>
-    <id>http://yoursite.com/2016/09/13/hello-world/</id>
+    <link href="https://dengzhhu653.github.io/2016/09/13/hello-world/"/>
+    <id>https://dengzhhu653.github.io/2016/09/13/hello-world/</id>
     <published>2016-09-13T08:34:44.000Z</published>
     <updated>2016-09-13T08:34:44.000Z</updated>
     
