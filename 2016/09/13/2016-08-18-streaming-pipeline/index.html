@@ -1,28 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-  <title></title>
-  
-  <link href="/atom.xml" rel="self"/>
-  
-  <link href="https://dengzhhu653.github.io/"/>
-  <updated>2016-09-13T12:36:58.000Z</updated>
-  <id>https://dengzhhu653.github.io/</id>
-  
-  <author>
-    <name>Zhihua Deng</name>
-    
-  </author>
-  
-  <generator uri="http://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>RegionServer不断重建Stream Pipeline问题</title>
-    <link href="https://dengzhhu653.github.io/2016/09/13/2016-08-18-streaming-pipeline/"/>
-    <id>https://dengzhhu653.github.io/2016/09/13/2016-08-18-streaming-pipeline/</id>
-    <published>2016-09-13T11:47:34.000Z</published>
-    <updated>2016-09-13T12:36:58.000Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="现象"><a href="#现象" class="headerlink" title="现象"></a>现象</h3><p>在我们的Hbase集群中，有时存在有些<em>RegionServer</em> 因为不能继续往<em>HDFS</em> 中写入<strong>WAL</strong>数据而导致异常退出，相应的异常如下：</p>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="Zhihua Deng"><meta name="description" content="现象在我们的Hbase集群中，有时存在有些RegionServer因为不能继续往HDFS中写入WAL数据而导致异常退出，相应的异常如下：2016-08-0603:45:42,547FATAL[regionserver/c1-hd-dn18.bdp.idc/10.13"><meta name="keywords" content=""><title>RegionServer不断重建Stream Pipeline问题 · null</title><link rel="icon" href="/favicon.ico"><link rel="canonical" href="https://dengzhhu653.github.io/2016/09/13/2016-08-18-streaming-pipeline/"><link rel="alternate" href="/atom.xml" title="null"><link rel="stylesheet" href="/fonts/iconfont/iconfont.css"><link rel="stylesheet" href="/css/style.css"><script type="text/javascript">var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?Your baidu Analytics ID";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script type="text/javascript">(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'Your Google Analytics ID', 'auto');
+ga('send', 'pageview');</script></head><body><div id="main"><header><a href="/." class="logo"></a><ul class="nav"><li class="nav-link"><a href="/archives/" target="_self">Archives</a></li><li class="nav-link"><a href="/about/" target="_self">About</a></li></ul></header><section id="container"><article class="post"><h1 class="post-title">RegionServer不断重建Stream Pipeline问题</h1><span class="post-time">Sep 13, 2016</span><div id="sidebar" class="post-sidebar"><h3 class="heading">Contents</h3><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#现象"><span class="toc-text">现象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分析"><span class="toc-text">分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#More"><span class="toc-text">More</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#如何解决"><span class="toc-text">如何解决</span></a></li></ol></div><div class="post-content"><h3 id="现象"><a href="#现象" class="headerlink" title="现象"></a>现象</h3><p>在我们的Hbase集群中，有时存在有些<em>RegionServer</em> 因为不能继续往<em>HDFS</em> 中写入<strong>WAL</strong>数据而导致异常退出，相应的异常如下：</p>
 <pre>
 2016-08-06 03:45:42,547 FATAL [regionserver/c1-hd-dn18.bdp.idc/10.130.1.37:16020.logRoller] regionserver.HRegionServer: ABORTING region server c1-hd-dn18.bdp.idc,16020,1469772903345: Failed log close in log roller
 org.apache.hadoop.hbase.regionserver.wal.FailedLogCloseException: hdfs://ns1/hbase/WALs/c1-hd-dn18.bdp.idc,16020,1469772903345/c1-hd-dn18.bdp.idc%2C16020%2C1469772903345.default.1470426151350, unflushedEntries=61
@@ -208,42 +197,16 @@ java.lang.IndexOutOfBoundsException
 <p><pre><br>2016-09-07 09:56:45,521 WARN org.apache.hadoop.hdfs.server.datanode.DataNode: Join on writer thread Thread[DataXceiver for client DFSClient<em>NONMAPREDUCE</em>-1754701259_1 at /10.130.1.37:51509 [Receiving block BP-360285305-10.130.1.11-1444619256876:blk_1143909363_70177457],5,dataXceiverServer] timed out<br>org.apache.hadoop.hdfs.server.datanode.fsdataset.impl.FsDatasetImpl.getTmpInputStreams(FsDatasetImpl.java:751)<br>org.apache.hadoop.hdfs.server.datanode.BlockReceiver.computePartialChunkCrc(BlockReceiver.java:1023)<br>org.apache.hadoop.hdfs.server.datanode.BlockReceiver.receivePacket(BlockReceiver.java:634)<br>org.apache.hadoop.hdfs.server.datanode.BlockReceiver.receiveBlock(BlockReceiver.java:849)<br>org.apache.hadoop.hdfs.server.datanode.DataXceiver.writeBlock(DataXceiver.java:804)<br>org.apache.hadoop.hdfs.protocol.datatransfer.Receiver.opWriteBlock(Receiver.java:137)<br>org.apache.hadoop.hdfs.protocol.datatransfer.Receiver.processOp(Receiver.java:74)<br>org.apache.hadoop.hdfs.server.datanode.DataXceiver.run(DataXceiver.java:251)<br>java.lang.Thread.run(Thread.java:745)<br></pre><br>这个过程使得hdfs从错误中恢复变得缓慢(需要2个timeout的时间），可以通过修改receivePacket的逻辑来快速的发现这样的情况：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Sanity check the header</span></div><div class="line"><span class="comment">// change condition to if (header.getOffsetInBlock() &gt; replicaInfo.getBytesOnDisk()) &#123;</span></div><div class="line"><span class="keyword">if</span> (header.getOffsetInBlock() &gt; replicaInfo.getNumBytes()) &#123;</div><div class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> IOException(<span class="string">"Received an out-of-sequence packet for "</span> + block + </div><div class="line">      <span class="string">"from "</span> + inAddr + <span class="string">" at offset "</span> + header.getOffsetInBlock() +</div><div class="line">      <span class="string">". Expecting packet starting at "</span> + replicaInfo.getNumBytes());</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>这需要重启我们的datanode服务才能生效。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h3 id=&quot;现象&quot;&gt;&lt;a href=&quot;#现象&quot; class=&quot;headerlink&quot; title=&quot;现象&quot;&gt;&lt;/a&gt;现象&lt;/h3&gt;&lt;p&gt;在我们的Hbase集群中，有时存在有些&lt;em&gt;RegionServer&lt;/em&gt; 因为不能继续往&lt;em&gt;HDFS&lt;/em&gt; 中写入&lt;stro
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>Hello World</title>
-    <link href="https://dengzhhu653.github.io/2016/09/13/hello-world/"/>
-    <id>https://dengzhhu653.github.io/2016/09/13/hello-world/</id>
-    <published>2016-09-13T08:34:44.000Z</published>
-    <updated>2016-09-13T08:34:44.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
-    
-    </summary>
-    
-    
-  </entry>
-  
-</feed>
+</div></article><div class="tags"></div><div class="paginator"><a href="/2016/09/13/hello-world/" class="next"><span>Next</span><i class="iconfont icon-right"></i></a></div><section id="comments"><div id="disqus_thread"></div></section><script type="text/javascript">var disqus_config = function () {
+    this.page.url = 'https://dengzhhu653.github.io/2016/09/13/2016-08-18-streaming-pipeline/';
+    this.page.identifier = '2016/09/13/2016-08-18-streaming-pipeline/';
+    this.page.title = 'RegionServer不断重建Stream Pipeline问题';
+};
+(function() {
+var d = document, s = d.createElement('script');
+
+s.src = '//dengzhhu653.disqus.com/embed.js';
+
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();</script></section><footer><div class="copyright"><p class="power">Powered by <a href="https://hexo.io/">Hexo</a> and Theme by <a href="https://github.com/ahonn/hexo-theme-even"> Even</a></p><p class="since">&copy;2016<span class="heart"><i class="iconfont icon-heart"></i></span><span class="author">Zhihua Deng</span></p></div><label id="back2top"><i class="iconfont icon-up"></i></label></footer></div><script src="/js/zepto.min.js"></script><script src="/js/theme.js"></script></body></html>
