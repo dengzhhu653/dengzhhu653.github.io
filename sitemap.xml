@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://dengzhhu653.github.io/hive_issues/</loc>
+    
+    <lastmod>2017-08-29T04:38:46.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://dengzhhu653.github.io/about/index.html</loc>
+    
+    <lastmod>2017-08-29T04:12:13.000Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://dengzhhu653.github.io/storm-core/</loc>
     
     <lastmod>2017-03-17T07:13:44.000Z</lastmod>
@@ -40,13 +54,6 @@
     <loc>https://dengzhhu653.github.io/streaming-pipeline/</loc>
     
     <lastmod>2016-09-14T06:45:27.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://dengzhhu653.github.io/about/index.html</loc>
-    
-    <lastmod>2016-09-14T04:37:45.000Z</lastmod>
     
   </url>
   
