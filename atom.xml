@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://dengzhhu653.github.io/"/>
-  <updated>2017-11-11T07:29:46.000Z</updated>
+  <updated>2017-11-11T07:33:46.000Z</updated>
   <id>https://dengzhhu653.github.io/</id>
   
   <author>
@@ -16,11 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title></title>
+    <title>Java GC</title>
     <link href="https://dengzhhu653.github.io/GC/"/>
     <id>https://dengzhhu653.github.io/GC/</id>
-    <published>2017-11-11T07:29:46.000Z</published>
-    <updated>2017-11-11T07:29:46.000Z</updated>
+    <published>2017-11-11T07:33:46.000Z</published>
+    <updated>2017-11-11T07:33:46.000Z</updated>
     
     <content type="html"><![CDATA[<h1><center>Java GC &#x8C03;&#x4F18;&#x7ECF;&#x5386;</center></h1>
 
@@ -205,6 +205,14 @@ survivor 2 * 300M
     
     </summary>
     
+      <category term="tech" scheme="https://dengzhhu653.github.io/categories/tech/"/>
+    
+    
+      <category term="JAVA" scheme="https://dengzhhu653.github.io/tags/JAVA/"/>
+    
+      <category term="GC" scheme="https://dengzhhu653.github.io/tags/GC/"/>
+    
+      <category term="HBase" scheme="https://dengzhhu653.github.io/tags/HBase/"/>
     
   </entry>
   
